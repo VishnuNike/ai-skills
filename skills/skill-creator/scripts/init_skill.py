@@ -12,6 +12,7 @@ Examples:
 """
 
 import sys
+import re
 from pathlib import Path
 
 
@@ -186,6 +187,43 @@ Note: This is a text placeholder. Actual assets can be any file type.
 """
 
 
+# SECURITY: Validate skill name before using it in paths or templates.
+# This is the same regex used by quick_validate.py, applied here to prevent
+# path traversal (e.g., "../../etc/evil") and template injection (e.g., names
+# containing braces) before any filesystem operations occur.
+VALID_SKILL_NAME = re.compile(r'^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$')
+MAX_SKILL_NAME_LENGTH = 64
+
+
+def validate_skill_name(name):
+    """
+    Validate skill name is safe for use in paths and templates.
+
+    Returns (is_valid, error_message) tuple.
+    """
+    if not name:
+        return False, "Skill name cannot be empty"
+
+    if len(name) > MAX_SKILL_NAME_LENGTH:
+        return False, f"Skill name too long ({len(name)} chars, max {MAX_SKILL_NAME_LENGTH})"
+
+    if not VALID_SKILL_NAME.match(name):
+        return False, (
+            f"Invalid skill name '{name}'. Must be hyphen-case "
+            "(lowercase letters, digits, and hyphens only). "
+            "Cannot start/end with hyphen."
+        )
+
+    if '--' in name:
+        return False, f"Skill name '{name}' cannot contain consecutive hyphens"
+
+    # Extra safety: reject anything that could be a path component
+    if '/' in name or '\\' in name or '..' in name or '.' in name:
+        return False, f"Skill name '{name}' contains invalid characters (path separators or dots)"
+
+    return True, "Valid"
+
+
 def title_case_skill_name(skill_name):
     """Convert hyphenated skill name to Title Case for display."""
     return ' '.join(word.capitalize() for word in skill_name.split('-'))
@@ -202,8 +240,20 @@ def init_skill(skill_name, path):
     Returns:
         Path to created skill directory, or None if error
     """
+    # SECURITY: Validate skill name before any filesystem operations
+    is_valid, error_msg = validate_skill_name(skill_name)
+    if not is_valid:
+        print(f"❌ Error: {error_msg}")
+        return None
+
     # Determine skill directory path
     skill_dir = Path(path).resolve() / skill_name
+
+    # SECURITY: Verify the resolved path is where we expect it
+    expected_parent = Path(path).resolve()
+    if not str(skill_dir).startswith(str(expected_parent)):
+        print(f"❌ Error: Resolved path escapes the target directory")
+        return None
 
     # Check if directory already exists
     if skill_dir.exists():
