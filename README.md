@@ -1,6 +1,6 @@
 # AI Skills Collection
 
-A curated collection of AI agent skills designed to enhance Claude's capabilities with specialized knowledge, workflows, and tool integrations. These skills transform Claude from a general-purpose assistant into a domain-specific expert. Made by Faiz Intifada (@faizntfd). Edited for security by Krishna Naik (@earthtoKrishna)
+A curated collection of AI agent skills designed to enhance Claude's capabilities with specialized knowledge, workflows, and tool integrations. These skills transform Claude from a general-purpose assistant into a domain-specific expert. Forked from Faiz Intifada (@faizntfd). Edited for security by Krishna Naik (@earthtoKrishna).
 
 ## What are Skills?
 
@@ -21,7 +21,6 @@ Skills are modular, self-contained packages that provide:
 | [shadcn-management](./skills/shadcn-management) | Manage shadcn/ui components using MCP tools | Frontend |
 | [rsc-data-optimizer](./skills/rsc-data-optimizer) | Optimize Next.js data fetching with React Server Components | Frontend |
 | [backend-dev](./skills/backend-dev) | Comprehensive backend development from API design to deployment | Backend |
-| [gemini-to-seedream-migration](./skills/gemini-to-seedream-migration) | Migrate AI image generation from Gemini 2.5 Flash to BytePlus SeeDream v4.5 | Migration |
 | [product-management](./skills/product-management) | PRDs, feature analysis, user research synthesis, and roadmap planning | Planning |
 | [task-generator](./skills/task-generator) | Generate structured task lists from specs or requirements | Planning |
 | [agents-md-generator](./skills/agents-md-generator) | Generate hierarchical AGENTS.md structures for codebases | Documentation |
@@ -89,19 +88,6 @@ End-to-end backend development workflow:
 - CI/CD and infrastructure automation
 - Testing strategies (unit, integration, E2E, load testing)
 
-### Migration & Integration
-
-#### `gemini-to-seedream-migration`
-Migrate AI image generation from Google Gemini 2.5 Flash to BytePlus SeeDream v4.5. Features:
-- 6-phase proven migration workflow (Environment → Client → Routes → Dependencies → Testing → Docs)
-- Production-ready TypeScript client template with comprehensive error handling
-- Complete API parameter mapping (Gemini SDK → BytePlus REST)
-- HTTP status code handling (400, 401, 429, 500, 503)
-- Image format conversion (base64 → data URI)
-- Resolution control (2K, 4K, exact pixels)
-- Comprehensive testing checklist (21 validation points)
-- Troubleshooting guide for 14 common issues
-- Based on successful real-world production migration
 
 ### Planning & Documentation
 
@@ -275,9 +261,3 @@ Contributions are welcome! When adding new skills:
 ## License
 
 Individual skills may have their own licenses. Check each skill's directory for specific licensing information.
-
----
-
-Built for [Factory AI](https://factory.ai) and compatible AI coding assistants.
-
-Curated & Created by Faiz Intifada (@faizntfd)
