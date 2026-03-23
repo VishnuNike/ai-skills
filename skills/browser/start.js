@@ -1,11 +1,8 @@
 #!/usr/bin/env node
 import { spawn } from 'child_process';
-import { existsSync, mkdirSync, cpSync } from 'fs';
+import { existsSync, mkdirSync, rmSync } from 'fs';
 import { join } from 'path';
 import { homedir, tmpdir, platform } from 'os';
-
-const args = process.argv.slice(2);
-const useProfile = args.includes('--profile');
 
 function getChromePath() {
   const paths = platform() === 'win32'
@@ -24,29 +21,12 @@ function getChromePath() {
   throw new Error('Chrome not found');
 }
 
-function getUserDataDir() {
-  if (platform() === 'win32') {
-    return join(process.env['LOCALAPPDATA'] || '', 'Google/Chrome/User Data');
-  } else if (platform() === 'darwin') {
-    return join(homedir(), 'Library/Application Support/Google/Chrome');
-  }
-  return join(homedir(), '.config/google-chrome');
-}
-
 async function main() {
   const chromePath = getChromePath();
   const tempProfile = join(tmpdir(), `chrome-debug-${Date.now()}`);
   mkdirSync(tempProfile, { recursive: true });
 
-  if (useProfile) {
-    const userDataDir = getUserDataDir();
-    const defaultProfile = join(userDataDir, 'Default');
-    if (existsSync(defaultProfile)) {
-      console.log('Copying Chrome profile...');
-      cpSync(defaultProfile, join(tempProfile, 'Default'), { recursive: true });
-    }
-  }
-
+  // Always use a fresh empty profile — never copy real user data
   const chromeArgs = [
     `--remote-debugging-port=9222`,
     `--user-data-dir=${tempProfile}`,
@@ -60,8 +40,28 @@ async function main() {
   });
   child.unref();
 
+  // Clean up temp profile when Chrome exits
+  child.on('exit', () => {
+    try {
+      rmSync(tempProfile, { recursive: true, force: true });
+      console.log('✓ Cleaned up temp profile');
+    } catch (err) {
+      console.error('Warning: could not clean temp profile:', err.message);
+    }
+  });
+
+  // Also clean up if this script is killed
+  process.on('SIGINT', () => {
+    try { rmSync(tempProfile, { recursive: true, force: true }); } catch {}
+    process.exit();
+  });
+  process.on('SIGTERM', () => {
+    try { rmSync(tempProfile, { recursive: true, force: true }); } catch {}
+    process.exit();
+  });
+
   await new Promise(resolve => setTimeout(resolve, 2000));
-  console.log(`✓ Chrome started on :9222${useProfile ? ' with your profile' : ''}`);
+  console.log(`✓ Chrome started on :9222 (fresh profile)`);
 }
 
 main().catch(err => {
