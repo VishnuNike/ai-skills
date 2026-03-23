@@ -12,11 +12,14 @@ Minimal CDP tools for collaborative site exploration and scraping.
 ## Start Chrome
 
 ```bash
-~/.factory/skills/browser/start.js              # Fresh profile
-~/.factory/skills/browser/start.js --profile    # Copy your profile (cookies, logins)
+~/.factory/skills/browser/start.js
 ```
 
-Start Chrome on `:9222` with remote debugging.
+Start Chrome on `127.0.0.1:9222` with remote debugging using a fresh, isolated profile.
+
+> **Security note**: Chrome is started with a temporary empty profile and the
+> debugging port is bound to localhost only. User browser data (cookies,
+> passwords, sessions) is never accessed.
 
 ## Navigate
 
@@ -27,6 +30,10 @@ Start Chrome on `:9222` with remote debugging.
 
 Navigate current tab or open new tab.
 
+> **Security note**: Only `http://` and `https://` URLs are allowed.
+> Navigation to `file://`, `javascript:`, and private/internal IP addresses
+> is blocked to prevent SSRF and local file access.
+
 ## Evaluate JavaScript
 
 ```bash
@@ -34,13 +41,17 @@ Navigate current tab or open new tab.
 ~/.factory/skills/browser/eval.js 'document.querySelectorAll("a").length'
 ```
 
-Execute JavaScript in active tab (async context).
+Execute JavaScript in active tab (async context, sandboxed).
 
 **IMPORTANT**: The code must be a single expression or use IIFE for multiple statements:
 
 - Single expression: `'document.title'`
 - Multiple statements: `'(() => { const x = 1; return x + 1; })()'`
 - Avoid newlines in the code string - keep it on one line
+
+> **Security note**: Code runs in an isolated execution context with
+> sensitive browser APIs (cookies, localStorage, sessionStorage,
+> credentials, indexedDB) disabled. Cross-origin fetch is also blocked.
 
 ## Screenshot
 
@@ -61,6 +72,5 @@ Interactive element picker. Click to select, Cmd/Ctrl+Click for multi-select, En
 ## Usage Notes
 
 - Start Chrome first before using other tools
-- The `--profile` flag syncs your actual Chrome profile so you're logged in everywhere
-- JavaScript evaluation runs in an async context in the page
+- JavaScript evaluation runs in a sandboxed async context in the page
 - Pick tool allows you to visually select DOM elements by clicking on them
