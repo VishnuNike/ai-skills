@@ -65,14 +65,43 @@ def package_skill(skill_path, output_dir=None):
 
     # Create the .skill file (zip format)
     try:
+        skipped_symlinks = []
+        escaped_paths = []
+
         with zipfile.ZipFile(skill_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
             # Walk through the skill directory
             for file_path in skill_path.rglob('*'):
+                # SECURITY: Skip symlinks to prevent packaging files from
+                # outside the skill directory. A malicious symlink pointing
+                # to /etc/passwd or ~/.ssh/id_rsa would otherwise be included
+                # in the distributable archive.
+                if file_path.is_symlink():
+                    skipped_symlinks.append(str(file_path.relative_to(skill_path)))
+                    continue
+
                 if file_path.is_file():
+                    # SECURITY: Verify the resolved path is still within the
+                    # skill directory. This catches edge cases where a non-symlink
+                    # path somehow resolves outside the boundary.
+                    resolved = file_path.resolve()
+                    if not str(resolved).startswith(str(skill_path)):
+                        escaped_paths.append(str(file_path.relative_to(skill_path)))
+                        continue
+
                     # Calculate the relative path within the zip
                     arcname = file_path.relative_to(skill_path.parent)
                     zipf.write(file_path, arcname)
                     print(f"  Added: {arcname}")
+
+        if skipped_symlinks:
+            print(f"\n⚠️  Skipped {len(skipped_symlinks)} symlink(s) (security policy):")
+            for s in skipped_symlinks:
+                print(f"    - {s}")
+
+        if escaped_paths:
+            print(f"\n⚠️  Skipped {len(escaped_paths)} path(s) resolving outside skill directory:")
+            for p in escaped_paths:
+                print(f"    - {p}")
 
         print(f"\n✅ Successfully packaged skill to: {skill_filename}")
         return skill_filename
