@@ -1,6 +1,6 @@
 # AI Skills Collection
 
-A curated collection of AI agent skills designed to enhance Claude's capabilities with specialized knowledge, workflows, and tool integrations. These skills transform Claude from a general-purpose assistant into a domain-specific expert. Forked from Faiz Intifada (@faizntfd). Edited for security by Krishna Naik (@earthtoKrishna).
+A curated collection of AI agent skills designed to enhance Claude's capabilities with specialized knowledge, workflows, and tool integrations. Forked from Faiz Intifada (@faizntfd). Edited for security by Krishna Naik (@earthtoKrishna).
 
 ## What are Skills?
 
@@ -14,7 +14,8 @@ Skills are modular, self-contained packages that provide:
 
 | Skill | Description | Category |
 |-------|-------------|----------|
-| [clone-website](./skills/clone-website) | Vibe-clone any website into production-ready Next.js 16 code using Firecrawl MCP | Frontend |
+| [create-spec](./skills/create-spec) | Generate text-only functional blueprints and visual briefs from target URLs using Firecrawl MCP | Frontend |
+| [reimagine-site](./skills/reimagine-site) | Build 100% original Next.js 16 projects based strictly on SPEC.md via Clean Room protocol | Frontend |
 | [frontend-design](./skills/frontend-design) | Create distinctive, production-grade frontend interfaces with high design quality | Frontend |
 | [frontend-ui-animator](./skills/frontend-ui-animator) | Implement purposeful UI animations for Next.js + Tailwind + React projects | Frontend |
 | [frontend-ui-integration](./skills/frontend-ui-integration) | Extend user-facing workflows integrating with existing backend APIs | Frontend |
@@ -30,17 +31,19 @@ Skills are modular, self-contained packages that provide:
 
 ## Skill Categories
 
-### Frontend Development
+### Frontend Development (Clean Room Protocol)
 
-#### `clone-website`
-Vibe-clone any website into production-ready Next.js 16 code using Firecrawl MCP. Features:
-- 3-phase workflow: Scrape → Analysis (mandatory review) → Code Generation
-- Firecrawl MCP integration for intelligent web scraping
-- Design token extraction (colors, typography, spacing, borders)
-- Partial cloning support (clone specific sections like hero, pricing, footer)
-- Image handling with automatic Unsplash fallback
-- Tech stack: Next.js 16 + TypeScript + Tailwind CSS v4 + Shadcn UI + Lucide React
+#### `create-spec`
+Extract the functional and aesthetic "soul" of any website to generate a text-only blueprint (SPEC.md) using Firecrawl MCP. This represents the **Analyst Phase**.
+- **Protocol:** 3-phase workflow: Scrape → Analysis (Thematic Review) → Specification Synthesis.
+- **Visual Briefing:** Documents subject matter and vibe for all media slots to enable independent asset sourcing (No downloads).
+- **Forensic Safety:** Zero session persistence and automated stripping of proprietary IDs or "Canary Tags."
 
+#### `reimagine-site`
+Build 100% original, production-ready Next.js 16 projects based **strictly** on a provided SPEC.md file. This represents the **Developer Phase**.
+- **Independent Creation:** Strictly blind to the original source URL; implements features based only on textual requirements.
+- **Standardized Guardrails:** Forbids arbitrary pixel values (e.g., `w-[347px]`) to ensure 0% structural similarity.
+- **Asset Fulfillment:** Automatically sources stock alternatives via Unsplash fallbacks and Lucide React icons.  
 #### `frontend-design`
 Create distinctive, memorable frontend interfaces that avoid generic "AI slop" aesthetics. Features:
 - Bold aesthetic direction and creative design thinking
@@ -183,20 +186,6 @@ Markdown content with workflows, patterns, and guidelines.
 ```
 
 ## Usage Examples
-
-### Website Cloning
-
-```
-User: "Clone the landing page from stripe.com"
-
-→ Skill scrapes the page using Firecrawl MCP
-→ Analyzes structure, design tokens, and components
-→ Presents analysis report for user review
-→ After confirmation, generates Next.js 16 code:
-  - app/layout.tsx, app/page.tsx, app/globals.css
-  - components/landing/Hero.tsx, Features.tsx, etc.
-  - Downloads images to public/images/
-```
 
 ### Frontend UI Animation
 
