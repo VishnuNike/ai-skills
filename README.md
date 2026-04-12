@@ -1,6 +1,6 @@
 # AI Skills Collection
 
-A curated collection of AI agent skills designed to enhance Claude's capabilities with specialized knowledge, workflows, and tool integrations. Forked from Faiz Intifada (@faizntfd). Edited for security by Krishna Naik (@earthtoKrishna).
+A curated collection of AI agent skills designed to enhance Claude's capabilities with specialized knowledge, workflows, and tool integrations. Forked from Faiz Intifada (@faizntfd). Edited for legal and cyber security by Krishna Naik (@earthtoKrishna).
 
 ## What are Skills?
 
